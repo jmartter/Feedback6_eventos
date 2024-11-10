@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "210221193368",
+    "project_id": "feedback4novelas",
+    "storage_bucket": "feedback4novelas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210221193368:android:20e56bd2c1f1daf5dd58ed",
+        "android_client_info": {
+          "package_name": "com.example.feedback4_eventos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM5RLYTT5Lq9vB9DVOBkka7eA263HGQcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
