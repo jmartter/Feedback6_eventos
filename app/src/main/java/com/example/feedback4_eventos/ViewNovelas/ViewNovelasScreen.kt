@@ -6,8 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import com.example.feedback1_eventos.Base_datos.Novela
-import com.example.feedback1_eventos.Base_datos.UserManager
+import com.example.feedback4_eventos.Base_datos.Novela
 
 @Composable
 fun ViewNovelasScreen(novelas: List<Novela>, onBack: () -> Unit, modifier: Modifier = Modifier, onDeleteNovela: (Novela) -> Unit, username: String) {

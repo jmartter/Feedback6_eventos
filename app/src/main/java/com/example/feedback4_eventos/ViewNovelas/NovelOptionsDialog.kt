@@ -7,8 +7,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.Modifier
-import com.example.feedback1_eventos.Base_datos.Novela
-import com.example.feedback1_eventos.Base_datos.UserManager
+import com.example.feedback4_eventos.Base_datos.Novela
+import com.example.feedback4_eventos.Base_datos.UserManager
 
 @Composable
 fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Unit, onView: () -> Unit, onToggleFavorite: () -> Unit, username: String) {

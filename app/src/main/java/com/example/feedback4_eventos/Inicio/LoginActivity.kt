@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
-import com.example.feedback4_eventos.LoginScreen
-import com.example.feedback4_eventos.RegisterScreen
+import com.example.feedback1_eventos.LoginScreen
+import com.example.feedback1_eventos.RegisterScreen
 import com.example.feedback4_eventos.Base_datos.UserManager
 
 class LoginActivity : ComponentActivity() {

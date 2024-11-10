@@ -15,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.feedback1_eventos.Base_datos.Novela
-import com.example.feedback1_eventos.R
+import com.example.feedback4_eventos.Base_datos.Novela
+import com.example.feedback4_eventos.R
 
 @Composable
 fun NovelList(novelas: List<Novela>, onSelectNovela: (Novela) -> Unit, modifier: Modifier = Modifier) {
