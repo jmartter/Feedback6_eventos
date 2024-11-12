@@ -3,15 +3,27 @@ package com.example.feedback4_eventos
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import com.example.feedback4_eventos.Base_datos.UserManager
 
 class NovelaWidget : AppWidgetProvider() {
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateInterval = 3000L // 3 seconds
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
+        scheduleNextUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    private fun scheduleNextUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        handler.postDelayed({
+            onUpdate(context, appWidgetManager, appWidgetIds)
+        }, updateInterval)
     }
 
     companion object {
