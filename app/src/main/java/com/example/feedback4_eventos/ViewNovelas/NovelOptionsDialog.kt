@@ -53,6 +53,7 @@ fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Un
     }
 }
 
+
 @Composable
 fun AddReviewDialog(novela: Novela, onDismiss: () -> Unit, onAddReview: (String) -> Unit) {
     var review by remember { mutableStateOf("") }

@@ -42,6 +42,7 @@ fun MenuUsuarioScreen(
     var novelas by remember { mutableStateOf<List<Novela>>(emptyList()) }
     var selectedNovela by remember { mutableStateOf<Novela?>(null) }
     var showNovelaDetail by remember { mutableStateOf(false) }
+    var showNovelOptionsDialog by remember { mutableStateOf(false) }
 
     // Periodically refresh the list of novelas
     LaunchedEffect(Unit) {
@@ -122,7 +123,10 @@ fun MenuUsuarioScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { selectedNovela = novela; showNovelaDetail = true }
+                                    .clickable {
+                                        selectedNovela = novela
+                                        showNovelaDetail = true
+                                    }
                                     .padding(8.dp)
                             ) {
                                 Text(
@@ -150,21 +154,28 @@ fun MenuUsuarioScreen(
         }
     }
 
+    // Mostrar el diálogo de opciones cuando se selecciona una novela
     selectedNovela?.let { novela ->
-        NovelOptionsDialog(
-            novela = novela,
-            onDismiss = { selectedNovela = null },
-            onDelete = {
-                UserManager.deleteNovelaFromUser(userName, novela)
-                novelas = novelas - novela
-                selectedNovela = null
-            },
-            onView = { showNovelaDetail = true },
-            onToggleFavorite = {
-                novela.isFavorite = !novela.isFavorite
-            },
-            username = userName
-        )
+        if (showNovelOptionsDialog) {
+            NovelOptionsDialog(
+                novela = novela,
+                onDismiss = { showNovelOptionsDialog = false },
+                onDelete = {
+                    UserManager.deleteNovelaFromUser(userName, novela)
+                    novelas = novelas - novela
+                    showNovelOptionsDialog = false
+                    selectedNovela = null
+                },
+                onView = {
+                    showNovelaDetail = true // Mantener el detalle visible
+                    showNovelOptionsDialog = false // Cerrar el diálogo
+                },
+                onToggleFavorite = {
+                    novela.isFavorite = !novela.isFavorite
+                },
+                username = userName
+            )
+        }
     }
 }
 
