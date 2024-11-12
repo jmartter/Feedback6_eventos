@@ -1,4 +1,6 @@
 // NovelOptionsDialog.kt
+package com.example.feedback4_eventos
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -53,7 +55,6 @@ fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Un
     }
 }
 
-
 @Composable
 fun AddReviewDialog(novela: Novela, onDismiss: () -> Unit, onAddReview: (String) -> Unit) {
     var review by remember { mutableStateOf("") }
@@ -72,10 +73,16 @@ fun AddReviewDialog(novela: Novela, onDismiss: () -> Unit, onAddReview: (String)
             }
         },
         confirmButton = {
-            TextButton(onClick = { onAddReview(review) }) { Text("Añadir") }
+            TextButton(onClick = {
+                onAddReview(review)
+            }) {
+                Text("Añadir")
+            }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
         }
     )
 }

@@ -1,9 +1,9 @@
+// MenuUsuarioScreen.kt
 package com.example.feedback4_eventos
 
-import NovelList
-import NovelOptionsDialog
 import ViewNovelaDetailScreen
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
@@ -50,7 +51,7 @@ fun MenuUsuarioScreen(
             UserManager.getNovelasForUser(userName) { fetchedNovelas ->
                 novelas = fetchedNovelas ?: emptyList()
             }
-            delay(10000)
+            delay(100)
         }
     }
 
@@ -134,6 +135,15 @@ fun MenuUsuarioScreen(
                                     fontSize = 16.sp,
                                     modifier = Modifier.weight(1f)
                                 )
+                                // Display star if novela is favorite
+                                if (novela.isFavorite) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Image(
+                                        painter = painterResource(id = R.drawable.estrella),
+                                        contentDescription = "Favorite",
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                             }
                         }
                     }
