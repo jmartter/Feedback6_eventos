@@ -1,8 +1,10 @@
 package com.example.feedback4_eventos
 
 import NovelList
+import NovelOptionsDialog
 import android.content.Intent
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +39,7 @@ fun MenuUsuarioScreen(
 ) {
     val context = LocalContext.current
     var novelas by remember { mutableStateOf<List<Novela>>(emptyList()) }
+    var selectedNovela by remember { mutableStateOf<Novela?>(null) }
 
     // Periodically refresh the list of novelas
     LaunchedEffect(Unit) {
@@ -114,16 +117,40 @@ fun MenuUsuarioScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(novelas) { novela ->
-                            Text(
-                                text = novela.titulo,
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(8.dp)
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { selectedNovela = novela }
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = novela.titulo,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    selectedNovela?.let { novela ->
+        NovelOptionsDialog(
+            novela = novela,
+            onDismiss = { selectedNovela = null },
+            onDelete = {
+                UserManager.deleteNovelaFromUser(userName, novela)
+                novelas = novelas - novela
+                selectedNovela = null
+            },
+            onView = { /* Implement view logic if needed */ },
+            onToggleFavorite = {
+                novela.isFavorite = !novela.isFavorite
+            },
+            username = userName
+        )
     }
 }
 
