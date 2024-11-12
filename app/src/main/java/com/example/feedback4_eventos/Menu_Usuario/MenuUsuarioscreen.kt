@@ -125,7 +125,7 @@ fun MenuUsuarioScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedNovela = novela
-                                        showNovelaDetail = true
+                                        showNovelOptionsDialog = true // Ensure dialog shows when a novela is clicked
                                     }
                                     .padding(8.dp)
                             ) {
@@ -178,6 +178,7 @@ fun MenuUsuarioScreen(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
