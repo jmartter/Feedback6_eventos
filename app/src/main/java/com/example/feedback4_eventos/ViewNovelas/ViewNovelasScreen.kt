@@ -14,10 +14,7 @@ fun ViewNovelasScreen(novelas: List<Novela>, onBack: () -> Unit, modifier: Modif
     var showNovelaDetail by remember { mutableStateOf(false) }
 
     if (showNovelaDetail && selectedNovela != null) {
-        ViewNovelaDetailScreen(novela = selectedNovela!!, onBack = {
-            showNovelaDetail = false
-            selectedNovela = null
-        })
+        ViewNovelaDetailScreen(novela = selectedNovela!!)
     } else {
         Scaffold { innerPadding ->
             Box(

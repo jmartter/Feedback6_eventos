@@ -2,6 +2,7 @@ package com.example.feedback4_eventos
 
 import NovelList
 import NovelOptionsDialog
+import ViewNovelaDetailScreen
 import android.content.Intent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,6 +41,7 @@ fun MenuUsuarioScreen(
     val context = LocalContext.current
     var novelas by remember { mutableStateOf<List<Novela>>(emptyList()) }
     var selectedNovela by remember { mutableStateOf<Novela?>(null) }
+    var showNovelaDetail by remember { mutableStateOf(false) }
 
     // Periodically refresh the list of novelas
     LaunchedEffect(Unit) {
@@ -120,7 +122,7 @@ fun MenuUsuarioScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { selectedNovela = novela }
+                                    .clickable { selectedNovela = novela; showNovelaDetail = true }
                                     .padding(8.dp)
                             ) {
                                 Text(
@@ -130,6 +132,18 @@ fun MenuUsuarioScreen(
                                 )
                             }
                         }
+                    }
+                }
+
+                // Box for novela details
+                if (showNovelaDetail && selectedNovela != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .border(1.dp, Color.Gray) // Border to make it visually distinct
+                    ) {
+                        ViewNovelaDetailScreen(novela = selectedNovela!!)
                     }
                 }
             }
@@ -145,7 +159,7 @@ fun MenuUsuarioScreen(
                 novelas = novelas - novela
                 selectedNovela = null
             },
-            onView = { /* Implement view logic if needed */ },
+            onView = { showNovelaDetail = true },
             onToggleFavorite = {
                 novela.isFavorite = !novela.isFavorite
             },
