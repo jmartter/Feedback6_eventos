@@ -1,6 +1,6 @@
-// MenuUsuarioScreen.kt
 package com.example.feedback4_eventos
 
+import NovelList
 import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,11 +14,32 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.feedback4_eventos.Base_datos.Novela
+import com.example.feedback4_eventos.Base_datos.UserManager
 import com.example.feedback4_eventos.Inicio.LoginActivity
+import kotlinx.coroutines.delay
 
 @Composable
-fun MenuUsuarioScreen(userName: String, onBack: () -> Unit, onAddNovela: () -> Unit, onViewUserNovelas: () -> Unit, onConfiguracion: () -> Unit, modifier: Modifier = Modifier) {
+fun MenuUsuarioScreen(
+    userName: String,
+    onBack: () -> Unit,
+    onAddNovela: () -> Unit,
+    onViewUserNovelas: () -> Unit,
+    onConfiguracion: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
+    var novelas by remember { mutableStateOf<List<Novela>>(emptyList()) }
+
+    // Periodically refresh the list of novelas
+    LaunchedEffect(Unit) {
+        while (true) {
+            UserManager.getNovelasForUser(userName) { fetchedNovelas ->
+                novelas = fetchedNovelas ?: emptyList()
+            }
+            delay(10000)
+        }
+    }
 
     Scaffold { innerPadding ->
         Box(
@@ -59,13 +80,6 @@ fun MenuUsuarioScreen(userName: String, onBack: () -> Unit, onAddNovela: () -> U
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
-                    onClick = onViewUserNovelas,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ver Novelas")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
                     onClick = onConfiguracion,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -73,6 +87,9 @@ fun MenuUsuarioScreen(userName: String, onBack: () -> Unit, onAddNovela: () -> U
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Configuración")
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Lista de Novelas", fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
+                NovelList(novelas = novelas, onSelectNovela = { /* Handle novela selection */ })
             }
         }
     }
