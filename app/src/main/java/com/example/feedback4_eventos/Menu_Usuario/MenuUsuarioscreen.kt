@@ -2,7 +2,13 @@ package com.example.feedback4_eventos
 
 import NovelList
 import android.content.Intent
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.feedback4_eventos.Base_datos.Novela
@@ -47,6 +54,7 @@ fun MenuUsuarioScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // Back Button
             IconButton(
                 onClick = {
                     val intent = Intent(context, LoginActivity::class.java)
@@ -56,6 +64,8 @@ fun MenuUsuarioScreen(
             ) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
             }
+
+            // Main content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,32 +74,54 @@ fun MenuUsuarioScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "Bienvenido $userName", fontSize = 24.sp, modifier = Modifier.padding(bottom = 16.dp))
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+
+                // Add Novela Button
                 Button(
                     onClick = onAddNovela,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp) // Adjust space between buttons
                 ) {
                     Text("Añadir Novela")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+
+                // Configuración Button
                 Button(
                     onClick = onConfiguracion,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp) // Adjust space between buttons
                 ) {
                     Icon(Icons.Filled.Settings, contentDescription = "Configuración")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Configuración")
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+
+                // Novela List Section
                 Text(text = "Lista de Novelas", fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
-                NovelList(novelas = novelas, onSelectNovela = { /* Handle novela selection */ })
+
+                // Box for novelas list with fixed size and scrollbar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp) // Fixed height for the novelas list
+                        .padding(16.dp)
+                        .border(1.dp, Color.Gray) // Border to make it visually distinct
+                ) {
+                    val state = rememberLazyListState()
+                    LazyColumn(
+                        state = state,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(novelas) { novela ->
+                            Text(
+                                text = novela.titulo,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
