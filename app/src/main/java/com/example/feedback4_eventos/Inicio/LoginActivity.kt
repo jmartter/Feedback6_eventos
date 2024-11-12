@@ -1,6 +1,7 @@
 // LoginActivity.kt
 package com.example.feedback4_eventos.Inicio
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +23,7 @@ class LoginActivity : ComponentActivity() {
                         UserManager.registerUser(username, password) { success, message ->
                             showMessage(message)
                             if (success) {
+                                saveUserCredentials(username, password)
                                 val intent = Intent(this, MenuUsuarioActivity::class.java)
                                 intent.putExtra("username", username)
                                 startActivity(intent)
@@ -36,6 +38,7 @@ class LoginActivity : ComponentActivity() {
                     onLogin = { username: String, password: String, showMessage ->
                         UserManager.getUser(username, password) { user ->
                             if (user != null) {
+                                saveUserCredentials(username, password)
                                 val intent = Intent(this, MenuUsuarioActivity::class.java)
                                 intent.putExtra("username", user.username)
                                 startActivity(intent)
@@ -48,6 +51,15 @@ class LoginActivity : ComponentActivity() {
                     onNavigateToRegister = { showRegisterScreen = true }
                 )
             }
+        }
+    }
+
+    private fun saveUserCredentials(username: String, password: String) {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("username", username)
+            putString("password", password)
+            apply()
         }
     }
 }

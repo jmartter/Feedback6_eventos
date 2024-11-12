@@ -27,25 +27,31 @@ class NovelaWidget : AppWidgetProvider() {
     }
 
     companion object {
-        private const val USERNAME = "1234"
-        private const val PASSWORD = "1234"
         private const val TAG = "NovelaWidget"
 
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-            val views = RemoteViews(context.packageName, R.layout.novela_widget)
+            val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            val username = sharedPreferences.getString("username", null)
+            val password = sharedPreferences.getString("password", null)
 
-            Log.d(TAG, "Fetching user data for widget update")
-            UserManager.getUser(USERNAME, PASSWORD) { user ->
-                if (user != null) {
-                    Log.d(TAG, "User data fetched successfully")
-                    val novelas = user.novelas.joinToString("\n") { novela -> novela.titulo }
-                    views.setTextViewText(R.id.novela_title, "Novelas de $USERNAME")
-                    views.setTextViewText(R.id.novela_list, novelas)
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
-                    Log.d(TAG, "Widget updated with user data")
-                } else {
-                    Log.e(TAG, "Failed to fetch user data")
+            if (username != null && password != null) {
+                val views = RemoteViews(context.packageName, R.layout.novela_widget)
+
+                Log.d(TAG, "Fetching user data for widget update")
+                UserManager.getUser(username, password) { user ->
+                    if (user != null) {
+                        Log.d(TAG, "User data fetched successfully")
+                        val novelas = user.novelas.joinToString("\n") { novela -> novela.titulo }
+                        views.setTextViewText(R.id.novela_title, "Novelas de $username")
+                        views.setTextViewText(R.id.novela_list, novelas)
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                        Log.d(TAG, "Widget updated with user data")
+                    } else {
+                        Log.e(TAG, "Failed to fetch user data")
+                    }
                 }
+            } else {
+                Log.e(TAG, "No user credentials found")
             }
         }
     }
