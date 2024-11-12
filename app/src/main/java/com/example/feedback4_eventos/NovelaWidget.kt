@@ -41,9 +41,10 @@ class NovelaWidget : AppWidgetProvider() {
                 UserManager.getUser(username, password) { user ->
                     if (user != null) {
                         Log.d(TAG, "User data fetched successfully")
-                        val novelas = user.novelas.joinToString("\n") { novela -> novela.titulo }
-                        views.setTextViewText(R.id.novela_title, "Novelas de $username")
-                        views.setTextViewText(R.id.novela_list, novelas)
+                        val favoriteNovelas = user.novelas.filter { it.isFavorite }
+                        val novelasText = favoriteNovelas.joinToString("\n") { novela -> novela.titulo }
+                        views.setTextViewText(R.id.novela_title, "Novelas Favoritas de $username")
+                        views.setTextViewText(R.id.novela_list, novelasText)
                         appWidgetManager.updateAppWidget(appWidgetId, views)
                         Log.d(TAG, "Widget updated with user data")
                     } else {
