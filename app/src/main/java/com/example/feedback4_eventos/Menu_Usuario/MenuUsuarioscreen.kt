@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -42,10 +44,8 @@ import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
 import com.example.feedback4_eventos.Inicio.LoginActivity
 import com.example.feedback4_eventos.NovelOptionsDialog
-
 import com.example.feedback4_eventos.R
 import com.example.feedback4_eventos.RandomLocationUpdater
-
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
 
@@ -229,11 +229,13 @@ fun MenuUsuarioScreen(
 
                 // Box for novela details
                 if (showNovelaDetail && selectedNovela != null) {
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                             .border(1.dp, Color.Gray) // Border to make it visually distinct
+                            .verticalScroll(rememberScrollState()) // Habilita desplazamiento vertical
+                            .heightIn(max = 300.dp) // Limita la altura máxima
                     ) {
                         ViewNovelaDetailScreen(novela = selectedNovela!!)
                     }
