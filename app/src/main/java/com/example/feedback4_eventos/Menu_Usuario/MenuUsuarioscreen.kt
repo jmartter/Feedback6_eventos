@@ -51,6 +51,8 @@ import kotlinx.coroutines.delay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuUsuarioScreen(
@@ -68,6 +70,7 @@ fun MenuUsuarioScreen(
     var showNovelOptionsDialog by remember { mutableStateOf(false) }
     var location by remember { mutableStateOf<Location?>(null) }
     var showLocationDialog by remember { mutableStateOf(false) }
+    var novelaLocations by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -271,8 +274,10 @@ fun MenuUsuarioScreen(
             text = {
                 Column {
                     TextButton(onClick = {
-                        // Lógica para mostrar ubicaciones de novelas
-                        showLocationDialog = false
+                        // Fetch and display novela locations
+                        UserManager.getNovelasForUser(userName) { fetchedNovelas ->
+                            novelaLocations = fetchedNovelas?.map { it.ubicacion } ?: emptyList()
+                        }
                     }) {
                         Text("Ubicaciones de Novelas")
                     }
@@ -295,6 +300,26 @@ fun MenuUsuarioScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showLocationDialog = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
+
+    // Mostrar el diálogo de ubicaciones de novelas
+    if (novelaLocations.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { novelaLocations = emptyList() },
+            title = { Text("Ubicaciones de Novelas") },
+            text = {
+                Column {
+                    novelaLocations.forEach { location ->
+                        Text(location)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { novelaLocations = emptyList() }) {
                     Text("Cerrar")
                 }
             }
