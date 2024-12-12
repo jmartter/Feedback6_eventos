@@ -48,6 +48,8 @@ import com.example.feedback4_eventos.R
 import com.example.feedback4_eventos.RandomLocationUpdater
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +67,7 @@ fun MenuUsuarioScreen(
     var showNovelaDetail by remember { mutableStateOf(false) }
     var showNovelOptionsDialog by remember { mutableStateOf(false) }
     var location by remember { mutableStateOf<Location?>(null) }
+    var showLocationDialog by remember { mutableStateOf(false) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -117,17 +120,7 @@ fun MenuUsuarioScreen(
             TopAppBar(
                 title = { Text("Menu Usuario") },
                 actions = {
-                    IconButton(onClick = {
-                        location?.let {
-                            val latitude = it.latitude
-                            val longitude = it.longitude
-                            val mapsUrl = "https://www.google.com/maps?q=$latitude,$longitude"
-                            val intent = Intent(Intent.ACTION_VIEW).apply {
-                                data = android.net.Uri.parse(mapsUrl)
-                            }
-                            context.startActivity(intent)
-                        }
-                    }) {
+                    IconButton(onClick = { showLocationDialog = true }) {
                         Icon(Icons.Filled.LocationOn, contentDescription = "Show Location")
                     }
                 }
@@ -269,23 +262,55 @@ fun MenuUsuarioScreen(
             )
         }
     }
+
+    // Mostrar el diálogo de selección de ubicación
+    if (showLocationDialog) {
+        AlertDialog(
+            onDismissRequest = { showLocationDialog = false },
+            title = { Text("Seleccionar Ubicación") },
+            text = {
+                Column {
+                    TextButton(onClick = {
+                        // Lógica para mostrar ubicaciones de novelas
+                        showLocationDialog = false
+                    }) {
+                        Text("Ubicaciones de Novelas")
+                    }
+                    TextButton(onClick = {
+                        // Lógica para mostrar mi ubicación
+                        location?.let {
+                            val latitude = it.latitude
+                            val longitude = it.longitude
+                            val mapsUrl = "https://www.google.com/maps?q=$latitude,$longitude"
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                data = android.net.Uri.parse(mapsUrl)
+                            }
+                            context.startActivity(intent)
+                        }
+                        showLocationDialog = false
+                    }) {
+                        Text("Mi Ubicación")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLocationDialog = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
 }
 
-private fun getLocation(context: Context, callback: (Location?) -> Unit) {
+private fun getLocation(context: Context, callback: (Location) -> Unit) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    ) {
+    try {
         fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                callback(location) // Devuelve la ubicación obtenida
+            .addOnSuccessListener { location: Location? ->
+                location?.let { callback(it) }
             }
-            .addOnFailureListener {
-                callback(null) // Manejo de error
-            }
-    } else {
-        callback(null) // Permisos no otorgados
+    } catch (e: SecurityException) {
+        e.printStackTrace()
     }
 }
 
