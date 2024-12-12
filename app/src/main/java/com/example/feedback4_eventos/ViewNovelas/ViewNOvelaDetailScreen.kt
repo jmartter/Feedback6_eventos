@@ -26,6 +26,7 @@ fun ViewNovelaDetailScreen(novela: Novela) {
                 Text(text = "Autor: ${novela.autor}", fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text(text = "Año de Publicación: ${novela.anoPublicacion}", fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Text(text = "Sinopsis: ${novela.sinopsis}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+                Text(text = "Ubicación: ${novela.ubicacion}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Reseñas:", fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
                 novela.reseñas.forEachIndexed { index, reseña ->
