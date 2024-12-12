@@ -1,35 +1,42 @@
-// MenuUsuarioScreen.kt
 package com.example.feedback4_eventos
 
 import ViewNovelaDetailScreen
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
 import com.example.feedback4_eventos.Inicio.LoginActivity
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuUsuarioScreen(
     userName: String,
@@ -44,6 +51,34 @@ fun MenuUsuarioScreen(
     var selectedNovela by remember { mutableStateOf<Novela?>(null) }
     var showNovelaDetail by remember { mutableStateOf(false) }
     var showNovelOptionsDialog by remember { mutableStateOf(false) }
+    var location by remember { mutableStateOf<Location?>(null) }
+    var showLocationDialog by remember { mutableStateOf(false) }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
+                getLocation(context) { loc -> location = loc }
+            }
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        } else {
+            getLocation(context) { loc -> location = loc }
+        }
+    }
 
     // Periodically refresh the list of novelas
     LaunchedEffect(Unit) {
@@ -55,7 +90,18 @@ fun MenuUsuarioScreen(
         }
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Menu Usuario") },
+                actions = {
+                    IconButton(onClick = { showLocationDialog = true }) {
+                        Icon(Icons.Filled.LocationOn, contentDescription = "Show Location")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -187,8 +233,47 @@ fun MenuUsuarioScreen(
             )
         }
     }
+
+    // Mostrar el diálogo de ubicación
+    if (showLocationDialog) {
+        AlertDialog(
+            onDismissRequest = { showLocationDialog = false },
+            title = { Text("Your Location") },
+            text = {
+                Text(
+                    if (location != null) {
+                        "Latitude: ${location?.latitude}\nLongitude: ${location?.longitude}"
+                    } else {
+                        "Unable to determine location. Please check if location services are enabled and try again."
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showLocationDialog = false }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
 }
 
+private fun getLocation(context: Context, callback: (Location?) -> Unit) {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    ) {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                callback(location) // Devuelve la ubicación obtenida
+            }
+            .addOnFailureListener {
+                callback(null) // Manejo de error
+            }
+    } else {
+        callback(null) // Permisos no otorgados
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
