@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import com.example.feedback4_eventos.Base_datos.Novela
+import com.example.feedback4_eventos.Base_datos.UserManager
 
 @Composable
 fun AddNovelaScreen(onBack: () -> Unit, onAddNovela: (Novela) -> Unit, modifier: Modifier = Modifier) {
@@ -73,8 +74,16 @@ fun AddNovelaScreen(onBack: () -> Unit, onAddNovela: (Novela) -> Unit, modifier:
                         } else {
                             try {
                                 val ano = anoPublicacion.toInt()
-                                val novela = Novela(titulo, autor, ano, sinopsis)
+                                val randomLibreria = LibreriaManager.getRandomLibreria()
+                                val novela = Novela(
+                                    titulo = titulo,
+                                    autor = autor,
+                                    anoPublicacion = ano,
+                                    sinopsis = sinopsis,
+                                    ubicacion = "${randomLibreria.nombre}, ${randomLibreria.direccion}"
+                                )
                                 onAddNovela(novela)
+                                UserManager.addNovelaToUser("username", novela) // Replace "username" with the actual username
                             } catch (e: NumberFormatException) {
                                 message = "Año de Publicación debe ser un número"
                             }
