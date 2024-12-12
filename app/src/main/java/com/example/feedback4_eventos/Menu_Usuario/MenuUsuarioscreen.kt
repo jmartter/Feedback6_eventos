@@ -1,4 +1,4 @@
-package com.example.feedback4_eventos
+package com.example.feedback4_eventos.Menu_Usuario
 
 import ViewNovelaDetailScreen
 import android.Manifest
@@ -15,17 +15,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +41,11 @@ import androidx.core.content.ContextCompat
 import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
 import com.example.feedback4_eventos.Inicio.LoginActivity
+import com.example.feedback4_eventos.NovelOptionsDialog
+
+import com.example.feedback4_eventos.R
+import com.example.feedback4_eventos.RandomLocationUpdater
+
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
 
@@ -245,8 +258,10 @@ fun MenuUsuarioScreen(
                     showNovelaDetail = true // Mantener el detalle visible
                     showNovelOptionsDialog = false // Cerrar el diálogo
                 },
-                onToggleFavorite = {
-                    novela.isFavorite = !novela.isFavorite
+                onToggleFavorite = { success, updatedNovelas ->
+                    if (success) {
+                        novelas = updatedNovelas ?: novelas
+                    }
                 },
                 username = userName
             )

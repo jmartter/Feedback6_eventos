@@ -13,7 +13,7 @@ import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
 
 @Composable
-fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Unit, onView: () -> Unit, onToggleFavorite: () -> Unit, username: String) {
+fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Unit, onView: () -> Unit, onToggleFavorite: (Boolean, List<Novela>?) -> Unit, username: String) {
     var showAddReviewDialog by remember { mutableStateOf(false) }
 
     if (showAddReviewDialog) {
@@ -37,9 +37,9 @@ fun NovelOptionsDialog(novela: Novela, onDismiss: () -> Unit, onDelete: () -> Un
                     TextButton(onClick = onDelete) { Text("Borrar") }
                     TextButton(onClick = onView) { Text("Ver") }
                     TextButton(onClick = {
-                        UserManager.toggleFavorite(username, novela) { success ->
+                        UserManager.toggleFavorite(username, novela) { success, updatedNovelas ->
                             if (success) {
-                                onToggleFavorite()
+                                onToggleFavorite(success, updatedNovelas)
                             }
                         }
                     }) {
