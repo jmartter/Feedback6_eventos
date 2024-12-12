@@ -52,7 +52,6 @@ fun MenuUsuarioScreen(
     var showNovelaDetail by remember { mutableStateOf(false) }
     var showNovelOptionsDialog by remember { mutableStateOf(false) }
     var location by remember { mutableStateOf<Location?>(null) }
-    var showLocationDialog by remember { mutableStateOf(false) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -80,6 +79,16 @@ fun MenuUsuarioScreen(
         }
     }
 
+    DisposableEffect(Unit) {
+        val randomLocationUpdater = RandomLocationUpdater(context) { loc ->
+            location = loc
+        }
+        randomLocationUpdater.start()
+        onDispose {
+            randomLocationUpdater.stop()
+        }
+    }
+
     // Periodically refresh the list of novelas
     LaunchedEffect(Unit) {
         while (true) {
@@ -95,7 +104,17 @@ fun MenuUsuarioScreen(
             TopAppBar(
                 title = { Text("Menu Usuario") },
                 actions = {
-                    IconButton(onClick = { showLocationDialog = true }) {
+                    IconButton(onClick = {
+                        location?.let {
+                            val latitude = it.latitude
+                            val longitude = it.longitude
+                            val mapsUrl = "https://www.google.com/maps?q=$latitude,$longitude"
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                data = android.net.Uri.parse(mapsUrl)
+                            }
+                            context.startActivity(intent)
+                        }
+                    }) {
                         Icon(Icons.Filled.LocationOn, contentDescription = "Show Location")
                     }
                 }
@@ -233,28 +252,6 @@ fun MenuUsuarioScreen(
             )
         }
     }
-
-    // Mostrar el diálogo de ubicación
-    if (showLocationDialog) {
-        AlertDialog(
-            onDismissRequest = { showLocationDialog = false },
-            title = { Text("Your Location") },
-            text = {
-                Text(
-                    if (location != null) {
-                        "Latitude: ${location?.latitude}\nLongitude: ${location?.longitude}"
-                    } else {
-                        "Unable to determine location. Please check if location services are enabled and try again."
-                    }
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { showLocationDialog = false }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
 }
 
 private fun getLocation(context: Context, callback: (Location?) -> Unit) {
@@ -275,8 +272,8 @@ private fun getLocation(context: Context, callback: (Location?) -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
+@Preview(showBackground = true)
 fun MenuUsuarioScreenPreview() {
     MenuUsuarioScreen(userName = "User", onBack = {}, onAddNovela = {}, onViewUserNovelas = {}, onConfiguracion = {})
 }
