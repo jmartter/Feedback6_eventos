@@ -70,7 +70,7 @@ object UserManager {
             }
     }
 
-    fun toggleFavorite(username: String, novela: Novela, callback: (Boolean) -> Unit) {
+    fun toggleFavorite(username: String, novela: Novela, callback: (Boolean, List<Novela>?) -> Unit) {
         val userRef = db.collection("users").document(username)
         userRef.get()
             .addOnSuccessListener { document ->
@@ -85,15 +85,15 @@ object UserManager {
                             }
                         }
                         userRef.update("novelas", updatedNovelas)
-                            .addOnSuccessListener { callback(true) }
-                            .addOnFailureListener { callback(false) }
-                    } ?: callback(false)
+                            .addOnSuccessListener { callback(true, updatedNovelas) }
+                            .addOnFailureListener { callback(false, null) }
+                    } ?: callback(false, null)
                 } else {
-                    callback(false)
+                    callback(false, null)
                 }
             }
             .addOnFailureListener {
-                callback(false)
+                callback(false, null)
             }
     }
 

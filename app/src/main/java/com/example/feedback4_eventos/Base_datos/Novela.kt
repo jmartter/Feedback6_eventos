@@ -1,4 +1,3 @@
-// Novela.kt
 package com.example.feedback4_eventos.Base_datos
 
 data class Novela(
@@ -7,5 +6,6 @@ data class Novela(
     val anoPublicacion: Int = 0,
     val sinopsis: String = "",
     var isFavorite: Boolean = false,
-    val reseñas: MutableList<String> = mutableListOf()
+    val reseñas: MutableList<String> = mutableListOf(),
+    val ubicacion: String = ""
 )

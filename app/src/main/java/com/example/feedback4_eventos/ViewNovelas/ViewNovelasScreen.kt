@@ -1,4 +1,3 @@
-// ViewNovelasScreen.kt
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,7 +9,8 @@ import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.NovelOptionsDialog
 
 @Composable
-fun ViewNovelasScreen(novelas: List<Novela>, onBack: () -> Unit, modifier: Modifier = Modifier, onDeleteNovela: (Novela) -> Unit, username: String) {
+fun ViewNovelasScreen(initialNovelas: List<Novela>, onBack: () -> Unit, modifier: Modifier = Modifier, onDeleteNovela: (Novela) -> Unit, username: String) {
+    var novelas by remember { mutableStateOf(initialNovelas) }
     var selectedNovela by remember { mutableStateOf<Novela?>(null) }
     var showNovelaDetail by remember { mutableStateOf(false) }
 
@@ -41,11 +41,14 @@ fun ViewNovelasScreen(novelas: List<Novela>, onBack: () -> Unit, modifier: Modif
                 onDismiss = { selectedNovela = null },
                 onDelete = {
                     onDeleteNovela(novela)
+                    novelas = novelas - novela
                     selectedNovela = null
                 },
                 onView = { showNovelaDetail = true },
-                onToggleFavorite = {
-                    novela.isFavorite = !novela.isFavorite
+                onToggleFavorite = { success, updatedNovelas ->
+                    if (success) {
+                        novelas = updatedNovelas ?: novelas
+                    }
                 },
                 username = username
             )

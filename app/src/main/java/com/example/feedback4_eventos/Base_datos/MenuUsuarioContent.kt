@@ -3,8 +3,8 @@ import androidx.compose.runtime.*
 import com.example.feedback4_eventos.AddNovelaScreen
 import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
-import com.example.feedback4_eventos.MenuUsuarioScreen
 import com.example.feedback4_eventos.ConfiguracionScreen
+import com.example.feedback4_eventos.Menu_Usuario.MenuUsuarioScreen
 
 @Composable
 fun MenuUsuarioContent(userName: String) {
@@ -34,7 +34,7 @@ fun MenuUsuarioContent(userName: String) {
         }
         showUserNovelasScreen -> {
             ViewNovelasScreen(
-                novelas = novelas,
+                initialNovelas = novelas,
                 onBack = { showUserNovelasScreen = false },
                 onDeleteNovela = { novela ->
                     UserManager.deleteNovelaFromUser(userName, novela)
