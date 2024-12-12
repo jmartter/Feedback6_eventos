@@ -310,11 +310,20 @@ fun MenuUsuarioScreen(
     if (novelaLocations.isNotEmpty()) {
         AlertDialog(
             onDismissRequest = { novelaLocations = emptyList() },
-            title = { Text("Ubicaciones de Novelas") },
+            title = { Text("Click para ver ubicación de la tienda") },
             text = {
                 Column {
                     novelaLocations.forEach { location ->
-                        Text(location)
+                        Text(
+                            text = location,
+                            modifier = Modifier.clickable {
+                                val mapsUrl = "https://www.google.com/maps?q=$location"
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    data = android.net.Uri.parse(mapsUrl)
+                                }
+                                context.startActivity(intent)
+                            }
+                        )
                     }
                 }
             },
