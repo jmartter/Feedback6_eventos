@@ -1,4 +1,4 @@
-package com.example.feedback4_eventos
+package com.example.feedback4_eventos.Widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import com.example.feedback4_eventos.Base_datos.UserManager
+import com.example.feedback4_eventos.R
 
 class NovelaWidget : AppWidgetProvider() {
     private val handler = Handler(Looper.getMainLooper())

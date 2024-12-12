@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import com.example.feedback4_eventos.Base_datos.LibreriaManager
 import com.example.feedback4_eventos.Base_datos.Novela
 import com.example.feedback4_eventos.Base_datos.UserManager
 

@@ -33,7 +33,7 @@
             android:theme="@style/Theme.Feedback4_eventos" />
 
         <receiver
-            android:name=".NovelaWidget"
+            android:name=".Widget.NovelaWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

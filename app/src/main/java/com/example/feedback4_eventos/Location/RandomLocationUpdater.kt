@@ -1,4 +1,4 @@
-package com.example.feedback4_eventos
+package com.example.feedback4_eventos.Location
 
 import android.content.Context
 import android.location.Location
