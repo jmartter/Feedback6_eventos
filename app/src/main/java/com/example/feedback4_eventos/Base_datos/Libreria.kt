@@ -15,7 +15,6 @@ object LibreriaManager {
         Libreria("Panta Rhei", "Calle del Hernán Cortés, 7, 28004 Madrid"),
         Libreria("Antonio Machado", "Calle de Fernando VI, 17, 28004 Madrid")
     )
-
     fun getRandomLibreria(): Libreria {
         return librerias.random()
     }
